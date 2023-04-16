@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">LangLearn</string>
+    <string name="task_text">Переведите предложение</string>
+    <string name="check">Проверить</string>
 </resources>
