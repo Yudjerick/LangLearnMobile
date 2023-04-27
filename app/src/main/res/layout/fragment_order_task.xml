@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OrderTaskFragment">
+    tools:context=".ui.OrderTaskFragment">
 
     <LinearLayout
         android:layout_marginLeft="16dp"
@@ -30,7 +30,7 @@
         </TextView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/target_constraint_layout"
+            android:id="@+id/answer_constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="150dp">
 

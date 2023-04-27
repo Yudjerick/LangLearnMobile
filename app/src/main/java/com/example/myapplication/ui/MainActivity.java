@@ -1,9 +1,10 @@
-package com.example.myapplication;
+package com.example.myapplication.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.example.myapplication.R;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MainActivity extends AppCompatActivity {

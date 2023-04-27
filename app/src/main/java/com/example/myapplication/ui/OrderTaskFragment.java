@@ -1,29 +1,33 @@
-package com.example.myapplication;
+package com.example.myapplication.ui;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.helper.widget.Flow;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.myapplication.data.OrderTask;
+import com.example.myapplication.OrderTaskViewModel;
 import com.example.myapplication.databinding.FragmentOrderTaskBinding;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class OrderTaskFragment extends Fragment {
     private FragmentOrderTaskBinding binding;
-
     private OrderTask task;
-
     private Flow bankFlow;
-    private Flow targetFlow;
+    private Flow answerFlow;
+
+    private OrderTaskViewModel model;
     public OrderTaskFragment() {}
 
     @Override
@@ -42,25 +46,21 @@ public class OrderTaskFragment extends Fragment {
         OrderTask task1 = new OrderTask(s,words);
         setTask(task1);
 
+        model = new ViewModelProvider(getActivity()).get(OrderTaskViewModel.class);
+        model.getAnswer().observe(getViewLifecycleOwner(), a ->{
+            setAnswerUI(model.getAnswer().getValue());
+        });
+
         binding.checkButton.setOnClickListener(view1 -> {
             ArrayList<String> givenAnswer = new ArrayList<>();
-            for(int index = 0; index < ((ViewGroup) binding.targetConstraintLayout).getChildCount(); index++) {
-                View nextChild = ((ViewGroup) binding.targetConstraintLayout).getChildAt(index);
+            for(int index = 0; index < ((ViewGroup) binding.answerConstraintLayout).getChildCount(); index++) {
+                View nextChild = ((ViewGroup) binding.answerConstraintLayout).getChildAt(index);
                 try {
                     givenAnswer.add((String) ((Button)nextChild).getText());
                 }
                 catch (ClassCastException ignored){
 
                 }
-
-            }
-            for (String w:givenAnswer
-            ) {
-                Log.d("AAAA", w);
-            }
-            for (String w:task.getAnswer()
-            ) {
-                Log.i("AAAA", w);
             }
             Toast.makeText(getContext(), String.valueOf(task.checkAnswer(givenAnswer)), Toast.LENGTH_SHORT).show();
         });
@@ -69,16 +69,15 @@ public class OrderTaskFragment extends Fragment {
     public void setTask(OrderTask task){
         this.task = task;
         binding.phraseToTranslate.setText(task.getTranslatedPhrase());
-        //String[] words = {"He","promised","to", "finish", "the", "project", "in", "one", "week"};
 
         bankFlow = addFlow(binding.bankConstraintLayout);
-        targetFlow = addFlow(binding.targetConstraintLayout);
+        answerFlow = addFlow(binding.answerConstraintLayout);
 
         for (String word: task.getVariants()) {
             Button btn = new Button(getContext());
             btn.setId(View.generateViewId());
             btn.setText(word);
-            btn.setOnClickListener(new MoveFromBankOnClickListener());
+            btn.setOnClickListener(new BankOnClickListener());
             binding.bankConstraintLayout.addView(btn);
             bankFlow.addView(btn);
         }
@@ -97,31 +96,44 @@ public class OrderTaskFragment extends Fragment {
         return flow;
     }
 
-    class MoveFromBankOnClickListener implements View.OnClickListener {
-        public MoveFromBankOnClickListener() {
+    class BankOnClickListener implements View.OnClickListener {
+        public BankOnClickListener() {
         }
 
         @Override
         public void onClick(View view) {
-            binding.bankConstraintLayout.removeView(view);
-            bankFlow.removeView(view);
-            binding.targetConstraintLayout.addView(view);
-            targetFlow.addView(view);
-            view.setOnClickListener(new MoveToBankOnClickListener());
+            List<String> newValue = model.getAnswer().getValue();
+            newValue.add((String) ((Button)view).getText());
+            ((MutableLiveData)model.getAnswer()).setValue(newValue);
         }
     }
 
-    class MoveToBankOnClickListener implements View.OnClickListener {
-        public MoveToBankOnClickListener() {
+    private void setAnswerUI(List<String> words){
+        binding.answerConstraintLayout.removeAllViews();
+        for (String word: words) {
+            Button view = new Button(getContext());
+            view.setText(word);
+            view.setId(View.generateViewId());
+            view.setOnClickListener(new AnswerOnClickListener());
+            binding.answerConstraintLayout.addView(view);
+            answerFlow.addView(view);
+        }
+        binding.answerConstraintLayout.addView(answerFlow);
+    }
+    class AnswerOnClickListener implements View.OnClickListener {
+        public AnswerOnClickListener() {
         }
 
         @Override
         public void onClick(View view) {
-            binding.targetConstraintLayout.removeView(view);
-            targetFlow.removeView(view);
-            binding.bankConstraintLayout.addView(view);
-            bankFlow.addView(view);
-            view.setOnClickListener(new MoveFromBankOnClickListener());
+            for (int i = 0; i < binding.answerConstraintLayout.getChildCount(); i++) {
+                if(binding.answerConstraintLayout.getChildAt(i) == view){
+                    List<String> newValue = model.getAnswer().getValue();
+                    newValue.remove(i);
+                    ((MutableLiveData)model.getAnswer()).setValue(newValue);
+                    break;
+                }
+            }
         }
     }
 }
