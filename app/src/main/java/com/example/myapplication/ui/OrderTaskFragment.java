@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.myapplication.data.OrderTask;
-import com.example.myapplication.OrderTaskViewModel;
+import com.example.myapplication.viewmodels.OrderTaskViewModel;
 import com.example.myapplication.databinding.FragmentOrderTaskBinding;
 
 import java.util.ArrayList;

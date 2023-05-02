@@ -22,7 +22,6 @@ public class OrderTask {
         this.answer = new ArrayList<>(Arrays.asList(answer));
         this.additionalVariants = new ArrayList<>();
     }
-
     public String getTranslatedPhrase() {
         return translatedPhrase;
     }
@@ -40,7 +39,7 @@ public class OrderTask {
         return list;
     }
 
-    boolean checkAnswer(List<String> givenAnswer){
+    public boolean checkAnswer(List<String> givenAnswer){
         return answer.equals(givenAnswer);
     }
 }

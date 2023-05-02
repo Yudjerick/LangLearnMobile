@@ -2,4 +2,6 @@
     <string name="app_name">LangLearn</string>
     <string name="task_text">Переведите предложение</string>
     <string name="check">Проверить</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
