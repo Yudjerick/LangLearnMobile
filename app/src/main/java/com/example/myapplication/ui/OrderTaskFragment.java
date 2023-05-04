@@ -1,4 +1,6 @@
 package com.example.myapplication.ui;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,12 +10,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.myapplication.R;
 import com.example.myapplication.data.OrderTask;
 import com.example.myapplication.viewmodels.OrderTaskViewModel;
 import com.example.myapplication.databinding.FragmentOrderTaskBinding;
@@ -41,15 +45,24 @@ public class OrderTaskFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String s = "Он обещал закончить проект через неделю";
-        String[] words = {"He","promised","to", "finish", "the", "project", "in", "one", "week"};
-        OrderTask task1 = new OrderTask(s,words);
-        setTask(task1);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        if(sharedPreferences.getBoolean("dark", false)){
+            binding.getRoot().setBackgroundColor(getResources().getColor(R.color.dark_background));
+        }
 
         model = new ViewModelProvider(getActivity()).get(OrderTaskViewModel.class);
         model.getAnswer().observe(getViewLifecycleOwner(), a ->{
             setAnswerUI(model.getAnswer().getValue());
         });
+        model.getBank().observe(getViewLifecycleOwner(), a->{
+            setBankUI(model.getBank().getValue());
+        });
+
+        String s = "Он обещал закончить проект через неделю";
+        String[] words = {"He","promised","to", "finish", "the", "project", "in", "one", "week"};
+        OrderTask task1 = new OrderTask(s,words);
+        setTask(task1);
 
         binding.checkButton.setOnClickListener(view1 -> {
             ArrayList<String> givenAnswer = new ArrayList<>();
@@ -68,6 +81,7 @@ public class OrderTaskFragment extends Fragment {
 
     public void setTask(OrderTask task){
         this.task = task;
+        model.setTask(task);
         binding.phraseToTranslate.setText(task.getTranslatedPhrase());
 
         bankFlow = addFlow(binding.bankConstraintLayout);
@@ -96,17 +110,7 @@ public class OrderTaskFragment extends Fragment {
         return flow;
     }
 
-    class BankOnClickListener implements View.OnClickListener {
-        public BankOnClickListener() {
-        }
 
-        @Override
-        public void onClick(View view) {
-            List<String> newValue = model.getAnswer().getValue();
-            newValue.add((String) ((Button)view).getText());
-            ((MutableLiveData)model.getAnswer()).setValue(newValue);
-        }
-    }
 
     private void setAnswerUI(List<String> words){
         binding.answerConstraintLayout.removeAllViews();
@@ -119,6 +123,18 @@ public class OrderTaskFragment extends Fragment {
             answerFlow.addView(view);
         }
         binding.answerConstraintLayout.addView(answerFlow);
+    }
+    private void setBankUI(List<String> words){
+        binding.bankConstraintLayout.removeAllViews();
+        for (String word: words) {
+            Button view = new Button(getContext());
+            view.setText(word);
+            view.setId(View.generateViewId());
+            view.setOnClickListener(new BankOnClickListener());
+            binding.bankConstraintLayout.addView(view);
+            bankFlow.addView(view);
+        }
+        binding.bankConstraintLayout.addView(bankFlow);
     }
     class AnswerOnClickListener implements View.OnClickListener {
         public AnswerOnClickListener() {
@@ -134,6 +150,17 @@ public class OrderTaskFragment extends Fragment {
                     break;
                 }
             }
+        }
+    }
+    class BankOnClickListener implements View.OnClickListener {
+        public BankOnClickListener() {
+        }
+
+        @Override
+        public void onClick(View view) {
+            List<String> newValue = model.getAnswer().getValue();
+            newValue.add((String) ((Button)view).getText());
+            model.setAnswer(newValue);
         }
     }
 }

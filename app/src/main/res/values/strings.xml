@@ -4,4 +4,7 @@
     <string name="check">Проверить</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+    <string name="preference_file_key">filekey1</string>
 </resources>

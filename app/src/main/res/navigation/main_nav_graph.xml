@@ -9,5 +9,18 @@
         android:id="@+id/orderTaskFragment"
         android:name="com.example.myapplication.ui.OrderTaskFragment"
         android:label="fragment_order_task"
-        tools:layout="@layout/fragment_order_task" />
+        tools:layout="@layout/fragment_order_task" >
+        <action
+            android:id="@+id/action_orderTaskFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.myapplication.ui.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_orderTaskFragment"
+            app:destination="@id/orderTaskFragment" />
+    </fragment>
 </navigation>
