@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/orderTaskFragment">
+    app:startDestination="@id/taskSelectionFragment">
 
     <fragment
         android:id="@+id/orderTaskFragment"
@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_orderTaskFragment_to_editorFragment"
             app:destination="@id/editorFragment" />
+        <action
+            android:id="@+id/action_orderTaskFragment_to_taskSelectionFragment"
+            app:destination="@id/taskSelectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -39,6 +42,15 @@
             app:destination="@id/settingsFragment" />
         <action
             android:id="@+id/action_editorFragment_to_orderTaskFragment"
+            app:destination="@id/orderTaskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskSelectionFragment"
+        android:name="com.example.myapplication.ui.TaskSelectionFragment"
+        android:label="fragment_task_selection"
+        tools:layout="@layout/fragment_task_selection" >
+        <action
+            android:id="@+id/action_taskSelectionFragment_to_orderTaskFragment"
             app:destination="@id/orderTaskFragment" />
     </fragment>
 </navigation>

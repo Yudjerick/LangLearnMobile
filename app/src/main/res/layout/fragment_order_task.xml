@@ -15,21 +15,58 @@
         android:orientation="vertical"
         tools:ignore="UselessParent">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/nunito_extrabold"
-            android:paddingBottom="10dp"
-            android:text="@string/task_text"
-            android:textSize="18sp"></TextView>
-        <TextView
-            android:textSize="18sp"
-            android:id="@+id/phrase_to_translate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/cross_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/close"></ImageButton>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_extrabold"
+                android:textAlignment="center"
+                android:textColor="@color/highlight_grey"
+                android:paddingBottom="30dp"
+                android:paddingTop="10dp"
+                android:text="@string/task_text"
+                android:textSize="24dp">
 
-        </TextView>
+            </TextView>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="191dp"
+                android:layout_height="237dp"
+                android:src="@drawable/robo_character1">
+
+            </ImageView>
+            <TextView
+                android:textSize="18sp"
+                android:fontFamily="@font/nunito_extrabold"
+                android:id="@+id/phrase_to_translate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:paddingLeft="15dp">
+
+            </TextView>
+
+        </LinearLayout>
+
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/answer_constraint_layout"

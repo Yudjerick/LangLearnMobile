@@ -10,6 +10,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -92,6 +94,13 @@ public class OrderTaskFragment extends Fragment {
             }
 
         });
+
+        binding.crossButton.setOnClickListener(view1 -> {
+            NavController navController = Navigation.findNavController(getActivity(),
+                    R.id.nav_host_fragment_container);
+            navController.navigate(R.id.taskSelectionFragment);
+        });
+
     }
 
     public void setTask(OrderTask task){
@@ -132,7 +141,7 @@ public class OrderTaskFragment extends Fragment {
     private void setAnswerUI(List<String> words){
         binding.answerConstraintLayout.removeAllViews();
         for (String word: words) {
-            TextView view = new TextView(getContext());
+            TextView view = (TextView) getLayoutInflater().inflate(R.layout.text_view_order_item, null);
             view.setText(word);
             view.setId(View.generateViewId());
             view.setPadding(0,0,25,0);
