@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_lessons:
                 navController.navigate(R.id.orderTaskFragment);
                 break;
+            case R.id.nav_editor:
+                navController.navigate(R.id.editorFragment);
+                break;
             case R.id.nav_settings:
                 navController.navigate(R.id.settingsFragment);
                 break;

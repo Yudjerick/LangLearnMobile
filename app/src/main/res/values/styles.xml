@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="WhiteShadowButton">
+        <!--<item name="android:background">@drawable/check_button__1_</item>-->
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/nunito_bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">24dp</item>
+        <item name="android:background">@drawable/check_button_selector</item>
+    </style>
+    <style name="ButtonA" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:fontFamily">@font/nunito_extrabold</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:background">@drawable/check_button_selector</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:textColor">@color/highlight_grey</item>
+        <item name="android:layout_marginLeft">5dp</item>
+    </style>
+</resources>

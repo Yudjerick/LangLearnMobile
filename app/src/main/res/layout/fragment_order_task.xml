@@ -7,6 +7,7 @@
     tools:context=".ui.OrderTaskFragment">
 
     <LinearLayout
+
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_width="match_parent"
@@ -15,41 +16,53 @@
         tools:ignore="UselessParent">
 
         <TextView
-            android:textSize="18sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_extrabold"
+            android:paddingBottom="10dp"
             android:text="@string/task_text"
-            android:paddingBottom="10dp">
-        </TextView>
+            android:textSize="18sp"></TextView>
         <TextView
             android:textSize="18sp"
             android:id="@+id/phrase_to_translate"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
 
         </TextView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/answer_constraint_layout"
             android:layout_width="match_parent"
-            android:layout_height="150dp">
+            android:layout_height="wrap_content"
+            android:layout_weight="3">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bank_constraint_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="10dp">
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <Button
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/check_button"
+
+            style="@style/ButtonA"
+            android:textSize="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/check"
-            android:background="@color/green">
-        </Button>
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/nunito_extrabold"
+            android:text="@string/check">
+            <!--style="@style/WhiteShadowButton"-->
+
+        </androidx.appcompat.widget.AppCompatButton>
     </LinearLayout>
 
 </FrameLayout>

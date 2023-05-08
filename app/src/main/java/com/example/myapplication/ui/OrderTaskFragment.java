@@ -1,6 +1,7 @@
 package com.example.myapplication.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
@@ -61,21 +63,34 @@ public class OrderTaskFragment extends Fragment {
 
         String s = "Он обещал закончить проект через неделю";
         String[] words = {"He","promised","to", "finish", "the", "project", "in", "one", "week"};
-        OrderTask task1 = new OrderTask(s,words);
-        setTask(task1);
+        String[] additional = {"day", "she"};
+        OrderTask task1 = new OrderTask(s,words, additional);
+        if(model.getTask() == null){
+            setTask(task1);
+        }
+        else{
+            setTask(model.getTask());
+        }
 
         binding.checkButton.setOnClickListener(view1 -> {
             ArrayList<String> givenAnswer = new ArrayList<>();
             for(int index = 0; index < ((ViewGroup) binding.answerConstraintLayout).getChildCount(); index++) {
                 View nextChild = ((ViewGroup) binding.answerConstraintLayout).getChildAt(index);
                 try {
-                    givenAnswer.add((String) ((Button)nextChild).getText());
+                    givenAnswer.add((String) ((TextView)nextChild).getText());
                 }
                 catch (ClassCastException ignored){
 
                 }
             }
-            Toast.makeText(getContext(), String.valueOf(task.checkAnswer(givenAnswer)), Toast.LENGTH_SHORT).show();
+            boolean result = task.checkAnswer(givenAnswer);
+            if(result){
+                Toast.makeText(getContext(), "Верно!", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(getContext(), "Ошибка!", Toast.LENGTH_SHORT).show();
+            }
+
         });
     }
 
@@ -106,6 +121,8 @@ public class OrderTaskFragment extends Fragment {
         flow.setHorizontalStyle(Flow.CHAIN_PACKED);
         flow.setHorizontalBias(0f);
         flow.setOrientation(Flow.HORIZONTAL);
+        flow.setHorizontalGap(15);
+        flow.setVerticalGap(10);
         constraintLayout.addView(flow);
         return flow;
     }
@@ -115,9 +132,12 @@ public class OrderTaskFragment extends Fragment {
     private void setAnswerUI(List<String> words){
         binding.answerConstraintLayout.removeAllViews();
         for (String word: words) {
-            Button view = new Button(getContext());
+            TextView view = new TextView(getContext());
             view.setText(word);
             view.setId(View.generateViewId());
+            view.setPadding(0,0,25,0);
+            view.setTextSize(24);
+            view.setTextColor(getResources().getColor(R.color.black));
             view.setOnClickListener(new AnswerOnClickListener());
             binding.answerConstraintLayout.addView(view);
             answerFlow.addView(view);
@@ -127,9 +147,10 @@ public class OrderTaskFragment extends Fragment {
     private void setBankUI(List<String> words){
         binding.bankConstraintLayout.removeAllViews();
         for (String word: words) {
-            Button view = new Button(getContext());
+            Button view = (Button)getLayoutInflater().inflate(R.layout.item_button, null);
             view.setText(word);
             view.setId(View.generateViewId());
+
             view.setOnClickListener(new BankOnClickListener());
             binding.bankConstraintLayout.addView(view);
             bankFlow.addView(view);

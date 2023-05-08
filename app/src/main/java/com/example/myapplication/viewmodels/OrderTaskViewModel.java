@@ -49,6 +49,10 @@ public class OrderTaskViewModel extends ViewModel {
         answer.setValue(words);
     }
 
+    public void clearAnswer(){
+        answer.setValue(new ArrayList<>());
+    }
+
     public void setTask(OrderTask task) {
         this.task = task;
         List<String> shuffled = task.getVariants();

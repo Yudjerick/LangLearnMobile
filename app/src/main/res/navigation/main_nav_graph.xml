@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_orderTaskFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_orderTaskFragment_to_editorFragment"
+            app:destination="@id/editorFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -21,6 +24,21 @@
         tools:layout="@layout/fragment_settings" >
         <action
             android:id="@+id/action_settingsFragment_to_orderTaskFragment"
+            app:destination="@id/orderTaskFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_editorFragment"
+            app:destination="@id/editorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editorFragment"
+        android:name="com.example.myapplication.ui.EditorFragment"
+        android:label="fragment_editor"
+        tools:layout="@layout/fragment_editor" >
+        <action
+            android:id="@+id/action_editorFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_editorFragment_to_orderTaskFragment"
             app:destination="@id/orderTaskFragment" />
     </fragment>
 </navigation>
