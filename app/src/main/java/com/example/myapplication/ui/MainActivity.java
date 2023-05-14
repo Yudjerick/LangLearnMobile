@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Repository.setApplication(getApplication());
+
         drawerLayout = findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
 
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         OrderTask task4 = new OrderTask("Она хочет груши", words4, additional4);
 
         Lesson lesson = new Lesson();
-        lesson.id = 1;
+        lesson.id = "1";
         lesson.isCompleted = false;
         lesson.description = "Try to save lesson";
         lesson.title = "Lesson 1. Test";
@@ -68,9 +70,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lesson.tasks.add(task3);
         lesson.tasks.add(task4);
         lesson.tasks.add(task1);
-        Repository.lessons.add(lesson);
-        //Repository.tasks.add(new OrderTaskData(task1, false));
-        //Repository.tasks.add(new OrderTaskData(task2, false));
+        Log.i("AAAA", "onCreate: ");
+        Repository.addLesson(lesson);
+        Log.i("AAAA", Repository.getLessons().toString());
     }
 
     @Override
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (item.getItemId()){
             case R.id.nav_lessons:
-                navController.navigate(R.id.orderTaskFragment);
+                navController.navigate(R.id.taskSelectionFragment);
                 break;
             case R.id.nav_editor:
                 navController.navigate(R.id.editorFragment);

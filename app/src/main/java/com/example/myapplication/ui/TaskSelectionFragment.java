@@ -38,8 +38,8 @@ public class TaskSelectionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         List<LessonItem> items = new ArrayList<>();
-        for (int i = 0; i < Repository.lessons.size(); i++) {
-            items.add(new LessonItem(Repository.lessons.get(i)));
+        for (int i = 0; i < Repository.getLessons().size(); i++) {
+            items.add(new LessonItem(Repository.getLessons().get(i)));
         }
 
         RecyclerView taskList = view.findViewById(R.id.task_list);

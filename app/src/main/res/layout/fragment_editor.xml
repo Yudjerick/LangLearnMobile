@@ -31,6 +31,14 @@
         android:fontFamily="@font/nunito_extrabold"
         android:layout_height="wrap_content" />
 
+    <EditText
+        android:id="@+id/lesson_name_input"
+        android:layout_width="425dp"
+        android:inputType="textPersonName"
+        android:text="Lesson 2"
+        android:fontFamily="@font/nunito_extrabold"
+        android:layout_height="wrap_content" />
+
     <androidx.appcompat.widget.AppCompatButton
         style="@style/ButtonA"
         android:text="save"

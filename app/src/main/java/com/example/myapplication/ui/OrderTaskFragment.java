@@ -89,29 +89,22 @@ public class OrderTaskFragment extends Fragment {
                 try {
                     givenAnswer.add((String) ((TextView)nextChild).getText());
                 }
-                catch (ClassCastException ignored){
-
-                }
+                catch (ClassCastException ignored){}
             }
             boolean result = task.checkAnswer(givenAnswer);
             if(result){
                 Toast.makeText(getContext(), "Верно!", Toast.LENGTH_SHORT).show();
-                if(Repository.lessons.contains(model.getLesson())){
+                if(Repository.containsLesson(model.getLesson().id)){
                     if(model.getLesson().tasks.size() - 1 > model.getTaskIndex()){
                         model.setTaskIndex(model.getTaskIndex()+1);
                         model.setTask(model.getLesson().tasks.get(model.getTaskIndex()));
-
-
-                        Toast.makeText(getContext(), String.valueOf(model.getTaskIndex()), Toast.LENGTH_SHORT).show();
                     }
                     else{
                         model.setTaskIndex(model.getTaskIndex()+1);
                         updateProgressBar();
-                        Repository.lessons.get(Repository.lessons.indexOf(model.getLesson())).isCompleted = true;
+                        Repository.setLessonCompleted(model.getLesson().id);
                     }
-
                 }
-
             }
             else{
                 Toast.makeText(getContext(), "Ошибка!", Toast.LENGTH_SHORT).show();

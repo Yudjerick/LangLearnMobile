@@ -15,11 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myapplication.R;
+import com.example.myapplication.data.Lesson;
 import com.example.myapplication.data.OrderTask;
 import com.example.myapplication.data.OrderTaskData;
 import com.example.myapplication.data.Repository;
 import com.example.myapplication.databinding.FragmentEditorBinding;
 import com.example.myapplication.viewmodels.OrderTaskViewModel;
+
+import java.util.ArrayList;
 
 public class EditorFragment extends Fragment {
     private FragmentEditorBinding binding;
@@ -56,9 +59,18 @@ public class EditorFragment extends Fragment {
         OrderTask task = new OrderTask(binding.phraseToTranslateEditorInput.getText().toString(),
                 binding.answerEditorInput.getText().toString().split(" "),
                 binding.additionalVariantsEditorInput.getText().toString().split(" "));
-        OrderTaskViewModel model = new ViewModelProvider(getActivity()).get(OrderTaskViewModel.class);
-        model.setTask(task);
-        model.clearAnswer();
-        Repository.tasks.add(new OrderTaskData(task));
+        if(Repository.containsLesson(binding.lessonNameInput.getText().toString())){
+            Repository.addTask(binding.lessonNameInput.getText().toString(), task);
+        }
+        else {
+            Lesson lesson = new Lesson();
+            lesson.isCompleted = false;
+            lesson.id = binding.lessonNameInput.getText().toString();
+            lesson.description = "Try to save lesson";
+            lesson.title = lesson.id;
+            lesson.tasks = new ArrayList<>();
+            Repository.addLesson(lesson);
+            SaveTask();
+        }
     }
 }
