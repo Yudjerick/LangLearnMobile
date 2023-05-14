@@ -17,6 +17,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.data.Lesson;
 import com.example.myapplication.data.OrderTask;
 import com.example.myapplication.ui.MainActivity;
 import com.example.myapplication.viewmodels.OrderTaskViewModel;
@@ -31,7 +32,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         final TextView textView;
         final ImageView imageView;
 
-        OrderTask task;
+        Lesson lesson;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -42,8 +43,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                     Log.i(TAG, textView.getText().toString());
                     NavController navController = Navigation.findNavController(view);
                     OrderTaskViewModel model = new ViewModelProvider((ViewModelStoreOwner) context).get(OrderTaskViewModel.class);
-                    model.setTask(task);
-                    model.clearAnswer();
+                    model.setLesson(lesson);
                     navController.navigate(R.id.orderTaskFragment);
                 }
             });
@@ -54,8 +54,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
 
     private final LayoutInflater inflater;
-    private final List<TaskItem> items;
-    public TaskListAdapter(Context context, List<TaskItem> items) {
+    private final List<LessonItem> items;
+    public TaskListAdapter(Context context, List<LessonItem> items) {
         this.inflater = LayoutInflater.from(context);
         this.items = items;
     }
@@ -68,9 +68,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        TaskItem item = items.get(position);
+        LessonItem item = items.get(position);
         holder.textView.setText(item.getText());
-        holder.task = item.getTask();
+        holder.lesson = item.getLesson();
         holder.imageView.setImageResource(item.getImageId());
     }
     @Override

@@ -2,6 +2,6 @@
 <TextView
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
-    android:textSize="16dp"
+    android:textSize="24dp"
     android:fontFamily="@font/nunito_extrabold"
     xmlns:android="http://schemas.android.com/apk/res/android"></TextView>

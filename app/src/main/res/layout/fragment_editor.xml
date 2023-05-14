@@ -4,11 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".ui.EditorFragment">
 
     <EditText
         android:id="@+id/phrase_to_translate_editor_input"
         android:layout_width="match_parent"
+        android:fontFamily="@font/nunito_extrabold"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:text="Name" />
@@ -17,6 +19,7 @@
         android:id="@+id/answer_editor_input"
         android:layout_width="425dp"
         android:inputType="textPersonName"
+        android:fontFamily="@font/nunito_extrabold"
         android:text="Name"
         android:layout_height="wrap_content" />
 
@@ -25,13 +28,14 @@
         android:layout_width="425dp"
         android:inputType="textPersonName"
         android:text="Name"
+        android:fontFamily="@font/nunito_extrabold"
         android:layout_height="wrap_content" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/ButtonA"
+        android:text="save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/save_task">
-
-    </Button>
+        android:id="@+id/save_task"/>
 
 </LinearLayout>

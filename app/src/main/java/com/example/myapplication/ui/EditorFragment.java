@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 
 import com.example.myapplication.R;
 import com.example.myapplication.data.OrderTask;
+import com.example.myapplication.data.OrderTaskData;
+import com.example.myapplication.data.Repository;
 import com.example.myapplication.databinding.FragmentEditorBinding;
 import com.example.myapplication.viewmodels.OrderTaskViewModel;
 
@@ -57,5 +59,6 @@ public class EditorFragment extends Fragment {
         OrderTaskViewModel model = new ViewModelProvider(getActivity()).get(OrderTaskViewModel.class);
         model.setTask(task);
         model.clearAnswer();
+        Repository.tasks.add(new OrderTaskData(task));
     }
 }

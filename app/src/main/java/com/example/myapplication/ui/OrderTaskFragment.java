@@ -18,11 +18,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.data.OrderTask;
+import com.example.myapplication.data.Repository;
 import com.example.myapplication.viewmodels.OrderTaskViewModel;
 import com.example.myapplication.databinding.FragmentOrderTaskBinding;
 
@@ -62,6 +65,11 @@ public class OrderTaskFragment extends Fragment {
         model.getBank().observe(getViewLifecycleOwner(), a->{
             setBankUI(model.getBank().getValue());
         });
+        model.getTaskLiveData().observe(getViewLifecycleOwner(), a->{
+            task = model.getTask();
+            binding.phraseToTranslate.setText(task.getTranslatedPhrase());
+            updateProgressBar();
+        });
 
         String s = "Он обещал закончить проект через неделю";
         String[] words = {"He","promised","to", "finish", "the", "project", "in", "one", "week"};
@@ -88,6 +96,22 @@ public class OrderTaskFragment extends Fragment {
             boolean result = task.checkAnswer(givenAnswer);
             if(result){
                 Toast.makeText(getContext(), "Верно!", Toast.LENGTH_SHORT).show();
+                if(Repository.lessons.contains(model.getLesson())){
+                    if(model.getLesson().tasks.size() - 1 > model.getTaskIndex()){
+                        model.setTaskIndex(model.getTaskIndex()+1);
+                        model.setTask(model.getLesson().tasks.get(model.getTaskIndex()));
+
+
+                        Toast.makeText(getContext(), String.valueOf(model.getTaskIndex()), Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        model.setTaskIndex(model.getTaskIndex()+1);
+                        updateProgressBar();
+                        Repository.lessons.get(Repository.lessons.indexOf(model.getLesson())).isCompleted = true;
+                    }
+
+                }
+
             }
             else{
                 Toast.makeText(getContext(), "Ошибка!", Toast.LENGTH_SHORT).show();
@@ -101,6 +125,13 @@ public class OrderTaskFragment extends Fragment {
             navController.navigate(R.id.taskSelectionFragment);
         });
 
+    }
+
+    private void updateProgressBar(){
+        float maxWidth = binding.barBackdround.getWidth();
+        float ratio = (float) model.getTaskIndex()/(float) model.getLesson().tasks.size();
+        binding.greenBar.requestLayout();
+        binding.greenBar.getLayoutParams().width = (int) (maxWidth*ratio);
     }
 
     public void setTask(OrderTask task){
@@ -135,18 +166,12 @@ public class OrderTaskFragment extends Fragment {
         constraintLayout.addView(flow);
         return flow;
     }
-
-
-
     private void setAnswerUI(List<String> words){
         binding.answerConstraintLayout.removeAllViews();
         for (String word: words) {
             TextView view = (TextView) getLayoutInflater().inflate(R.layout.text_view_order_item, null);
             view.setText(word);
             view.setId(View.generateViewId());
-            view.setPadding(0,0,25,0);
-            view.setTextSize(24);
-            view.setTextColor(getResources().getColor(R.color.black));
             view.setOnClickListener(new AnswerOnClickListener());
             binding.answerConstraintLayout.addView(view);
             answerFlow.addView(view);
@@ -159,13 +184,13 @@ public class OrderTaskFragment extends Fragment {
             Button view = (Button)getLayoutInflater().inflate(R.layout.item_button, null);
             view.setText(word);
             view.setId(View.generateViewId());
-
             view.setOnClickListener(new BankOnClickListener());
             binding.bankConstraintLayout.addView(view);
             bankFlow.addView(view);
         }
         binding.bankConstraintLayout.addView(bankFlow);
     }
+
     class AnswerOnClickListener implements View.OnClickListener {
         public AnswerOnClickListener() {
         }

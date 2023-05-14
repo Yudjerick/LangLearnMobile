@@ -1,12 +1,12 @@
 package com.example.myapplication.data;
 
+import androidx.room.Entity;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+@Entity
 public class OrderTask {
-
-
     private String translatedPhrase;
     private final ArrayList<String> answer;
     private ArrayList<String> additionalVariants;
