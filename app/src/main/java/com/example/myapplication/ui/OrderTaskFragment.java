@@ -2,6 +2,7 @@ package com.example.myapplication.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -94,6 +95,10 @@ public class OrderTaskFragment extends Fragment {
             boolean result = task.checkAnswer(givenAnswer);
             if(result){
                 Toast.makeText(getContext(), "Верно!", Toast.LENGTH_SHORT).show();
+
+                AnimatedVectorDrawable avd = (AnimatedVectorDrawable) binding.robotCharacter.getDrawable();
+                avd.start();
+
                 if(Repository.containsLesson(model.getLesson().id)){
                     if(model.getLesson().tasks.size() - 1 > model.getTaskIndex()){
                         model.setTaskIndex(model.getTaskIndex()+1);

@@ -25,9 +25,6 @@ public class Repository {
         LessonDataBase db = LessonDataBase.getDatabase(application);
         Dao dao = db.dao();
         dao.updateIsCompleted(id);
-        /*dao.delete(lesson);
-        lesson.isCompleted = true;
-        dao.insertAll(lesson);*/
     }
 
     public static void setApplication(Application application) {

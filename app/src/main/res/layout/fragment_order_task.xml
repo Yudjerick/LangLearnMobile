@@ -66,9 +66,10 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/robot_character"
                 android:layout_width="191dp"
                 android:layout_height="237dp"
-                android:src="@drawable/robo_character1">
+                android:src="@drawable/happy_bot_alt_anim">
 
             </ImageView>
             <TextView
