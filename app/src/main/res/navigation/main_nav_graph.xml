@@ -51,6 +51,8 @@
         tools:layout="@layout/fragment_task_selection" >
         <action
             android:id="@+id/action_taskSelectionFragment_to_orderTaskFragment"
-            app:destination="@id/orderTaskFragment" />
+            app:destination="@id/orderTaskFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/slide_out" />
     </fragment>
 </navigation>

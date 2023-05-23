@@ -96,6 +96,7 @@ public class OrderTaskFragment extends Fragment {
             if(result){
                 Toast.makeText(getContext(), "Верно!", Toast.LENGTH_SHORT).show();
 
+                binding.robotCharacter.setImageResource(R.drawable.happy_bot_alt_anim);
                 AnimatedVectorDrawable avd = (AnimatedVectorDrawable) binding.robotCharacter.getDrawable();
                 avd.start();
 
@@ -112,6 +113,10 @@ public class OrderTaskFragment extends Fragment {
                 }
             }
             else{
+                binding.robotCharacter.setImageResource(R.drawable.anim_robot_wrong);
+                AnimatedVectorDrawable avd = (AnimatedVectorDrawable) binding.robotCharacter.getDrawable();
+                avd.start();
+
                 Toast.makeText(getContext(), "Ошибка!", Toast.LENGTH_SHORT).show();
             }
 

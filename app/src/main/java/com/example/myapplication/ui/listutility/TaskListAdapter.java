@@ -44,7 +44,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                     NavController navController = Navigation.findNavController(view);
                     OrderTaskViewModel model = new ViewModelProvider((ViewModelStoreOwner) context).get(OrderTaskViewModel.class);
                     model.setLesson(lesson);
-                    navController.navigate(R.id.orderTaskFragment);
+                    navController.navigate(R.id.action_taskSelectionFragment_to_orderTaskFragment);
                 }
             });
 
