@@ -96,7 +96,7 @@ public class OrderTaskFragment extends Fragment {
             if(result){
                 Toast.makeText(getContext(), "Верно!", Toast.LENGTH_SHORT).show();
 
-                binding.robotCharacter.setImageResource(R.drawable.happy_bot_alt_anim);
+                binding.robotCharacter.setImageResource(R.drawable.anim_robot_right);
                 AnimatedVectorDrawable avd = (AnimatedVectorDrawable) binding.robotCharacter.getDrawable();
                 avd.start();
 
