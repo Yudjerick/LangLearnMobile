@@ -18,7 +18,12 @@
             app:destination="@id/editorFragment" />
         <action
             android:id="@+id/action_orderTaskFragment_to_taskSelectionFragment"
-            app:destination="@id/taskSelectionFragment" />
+            app:destination="@id/taskSelectionFragment"
+            app:enterAnim="@anim/ultimate_enter_anim"
+            app:exitAnim="@anim/ultimate_exit_anim" />
+        <action
+            android:id="@+id/action_orderTaskFragment_to_downloadFragment"
+            app:destination="@id/downloadFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -31,6 +36,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_editorFragment"
             app:destination="@id/editorFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_downloadFragment"
+            app:destination="@id/downloadFragment" />
     </fragment>
     <fragment
         android:id="@+id/editorFragment"
@@ -43,6 +51,9 @@
         <action
             android:id="@+id/action_editorFragment_to_orderTaskFragment"
             app:destination="@id/orderTaskFragment" />
+        <action
+            android:id="@+id/action_editorFragment_to_downloadFragment"
+            app:destination="@id/downloadFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskSelectionFragment"
@@ -52,7 +63,28 @@
         <action
             android:id="@+id/action_taskSelectionFragment_to_orderTaskFragment"
             app:destination="@id/orderTaskFragment"
-            app:enterAnim="@anim/slide_in"
-            app:exitAnim="@anim/slide_out" />
+            app:enterAnim="@anim/ultimate_enter_anim"
+            app:exitAnim="@anim/ultimate_exit_anim" />
+        <action
+            android:id="@+id/action_taskSelectionFragment_to_downloadFragment"
+            app:destination="@id/downloadFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/downloadFragment"
+        android:name="com.example.myapplication.ui.DownloadFragment"
+        android:label="fragment_download"
+        tools:layout="@layout/fragment_download" >
+        <action
+            android:id="@+id/action_downloadFragment_to_editorFragment"
+            app:destination="@id/editorFragment" />
+        <action
+            android:id="@+id/action_downloadFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_downloadFragment_to_orderTaskFragment"
+            app:destination="@id/orderTaskFragment" />
+        <action
+            android:id="@+id/action_downloadFragment_to_taskSelectionFragment"
+            app:destination="@id/taskSelectionFragment" />
     </fragment>
 </navigation>

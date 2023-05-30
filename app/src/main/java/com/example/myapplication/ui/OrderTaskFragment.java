@@ -32,6 +32,10 @@ import com.example.myapplication.databinding.FragmentOrderTaskBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class OrderTaskFragment extends Fragment {
     private FragmentOrderTaskBinding binding;
@@ -40,6 +44,7 @@ public class OrderTaskFragment extends Fragment {
     private Flow answerFlow;
 
     private OrderTaskViewModel model;
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
     public OrderTaskFragment() {}
 
     @Override
@@ -71,6 +76,9 @@ public class OrderTaskFragment extends Fragment {
             binding.phraseToTranslate.setText(task.getTranslatedPhrase());
             updateProgressBar();
         });
+
+        binding.greenBar.getLayoutParams().width = 0;
+
 
         String s = "Он обещал закончить проект через неделю";
         String[] words = {"He","promised","to", "finish", "the", "project", "in", "one", "week"};
@@ -125,16 +133,51 @@ public class OrderTaskFragment extends Fragment {
         binding.crossButton.setOnClickListener(view1 -> {
             NavController navController = Navigation.findNavController(getActivity(),
                     R.id.nav_host_fragment_container);
-            navController.navigate(R.id.taskSelectionFragment);
+            navController.navigate(R.id.action_orderTaskFragment_to_taskSelectionFragment);
         });
 
     }
-
     private void updateProgressBar(){
         float maxWidth = binding.barBackdround.getWidth();
         float ratio = (float) model.getTaskIndex()/(float) model.getLesson().tasks.size();
         binding.greenBar.requestLayout();
-        binding.greenBar.getLayoutParams().width = (int) (maxWidth*ratio);
+
+        Runnable greenBarUpdating = new Runnable() {
+            @Override
+            public void run() {
+                int previousWidth = binding.greenBar.getWidth();
+                try {
+                    for (int i = 0; i < 9; i++) {
+                        Thread.sleep(20);
+                        Log.i("AAA","AAAAAAAA");
+                        binding.greenBar.post(() -> {
+                            binding.greenBar.requestLayout();
+                            binding.greenBar.getLayoutParams().width += (int)( ((maxWidth *
+                                    ratio - previousWidth)) / 10);
+                        });
+                    }
+                    Thread.sleep(20);
+                    binding.greenBar.post(() -> {
+                        binding.greenBar.requestLayout();
+                        binding.greenBar.getLayoutParams().width = (int) (maxWidth*ratio);
+                    });
+
+                } catch (InterruptedException e) {
+
+                    Log.i("AAA","Exep");
+                    binding.greenBar.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            binding.greenBar.getLayoutParams().width = (int) (maxWidth*ratio);
+                        }
+                    });
+                }
+
+
+            }
+        };
+        executorService.execute(greenBarUpdating);
+        //binding.greenBar.getLayoutParams().width = (int) (maxWidth*ratio);
     }
 
     public void setTask(OrderTask task){
@@ -219,6 +262,19 @@ public class OrderTaskFragment extends Fragment {
             List<String> newValue = model.getAnswer().getValue();
             newValue.add((String) ((Button)view).getText());
             model.setAnswer(newValue);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        try {
+            if(!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)){
+                executorService.shutdownNow();
+            }
+        }
+        catch (Exception e){
+            executorService.shutdownNow();
         }
     }
 }

@@ -22,4 +22,7 @@ public interface Dao {
 
     @Delete
     void delete(Lesson lesson);
+
+    @Query("DELETE FROM lesson")
+    void nukeTable();
 }

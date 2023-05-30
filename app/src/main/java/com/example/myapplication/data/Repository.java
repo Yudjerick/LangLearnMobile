@@ -1,14 +1,29 @@
 package com.example.myapplication.data;
 
 import android.app.Application;
+import android.util.Log;
+import android.widget.Toast;
 
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import com.example.myapplication.R;
 import com.example.myapplication.data.converters.OrderTaskListConverter;
+import com.example.myapplication.viewmodels.OrderTaskViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class Repository {
     private static Application application;
+
 
     public static List<Lesson> getLessons(){
         LessonDataBase db = LessonDataBase.getDatabase(application);
@@ -76,4 +91,12 @@ public class Repository {
         }
         return null;
     }
+
+    public static void nukeDataBase(){
+        LessonDataBase db = LessonDataBase.getDatabase(application);
+        Dao dao = db.dao();
+        dao.nukeTable();
+    }
+
+
 }

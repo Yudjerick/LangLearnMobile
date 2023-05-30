@@ -4,9 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.Navigator;
+import androidx.navigation.fragment.FragmentNavigator;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,8 +23,10 @@ import com.example.myapplication.data.Lesson;
 import com.example.myapplication.data.OrderTask;
 import com.example.myapplication.data.OrderTaskData;
 import com.example.myapplication.data.Repository;
+import com.example.myapplication.viewmodels.OrderTaskViewModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Repository.setApplication(getApplication());
+        //Repository.nukeDataBase();
+
+
 
         drawerLayout = findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
@@ -45,8 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-        String s = "Он обещал закончить проект через неделю";
+        /*String s = "Он обещал закончить проект через неделю";
         String[] words = {"He","promised","to", "finish", "the", "project", "in", "one", "week"};
         String[] additional = {"day", "she"};
         OrderTask task1 = new OrderTask(s,words, additional);
@@ -72,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lesson.tasks.add(task1);
         Log.i("AAAA", "onCreate: ");
         Repository.addLesson(lesson);
-        Log.i("AAAA", Repository.getLessons().toString());
+        Log.i("AAAA", Repository.getLessons().toString());*/
     }
 
     @Override
@@ -98,7 +107,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_settings:
                 navController.navigate(R.id.settingsFragment);
                 break;
+            case R.id.nav_download:
+                navController.navigate(R.id.downloadFragment);
         }
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+        if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(type)) {
+            String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            if (sharedText != null) {
+                try{
+                    Gson gson = new Gson();
+                    Lesson lesson = gson.fromJson(sharedText, Lesson.class);
+                    if(lesson!=null){
+                        NavController navController = Navigation.findNavController(this,
+                                R.id.nav_host_fragment_container);
+                        navController.navigate(R.id.orderTaskFragment);
+                        OrderTaskViewModel model = new ViewModelProvider(this).get(OrderTaskViewModel.class);
+                        model.setLesson(lesson);
+                    }
+                    Navigation.findNavController(this, R.id.nav_host_fragment_container)
+                            .navigate(R.id.orderTaskFragment);
+                }
+                catch (Exception ignored){}
+            }
+        }
     }
 }

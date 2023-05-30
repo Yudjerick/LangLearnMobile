@@ -1,34 +1,44 @@
 package com.example.myapplication.ui;
 
-import static java.net.Proxy.Type.HTTP;
-
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.data.Lesson;
+import com.example.myapplication.data.LessonsAPI;
+import com.example.myapplication.data.Repository;
 import com.example.myapplication.databinding.FragmentSettingsBinding;
+import com.example.myapplication.viewmodels.OrderTaskViewModel;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+
 public class SettingsFragment extends Fragment {
+
+
 
     FragmentSettingsBinding binding;
     public SettingsFragment() {
@@ -78,6 +88,7 @@ public class SettingsFragment extends Fragment {
 
             saveFiles();
         });
+
     }
 
     private void saveFiles(){
@@ -123,4 +134,7 @@ public class SettingsFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
+
+
 }
