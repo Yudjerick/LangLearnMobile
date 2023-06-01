@@ -10,4 +10,6 @@
     <color name="green">#8BC34A</color>
     <color name="dark_background">#384677</color>
     <color name="highlight_grey">#8F8F8F</color>
+    <color name="violet">#CB98FF</color>
+    <color name="violet_dark">#966DBE</color>
 </resources>

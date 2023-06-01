@@ -28,4 +28,12 @@
         android:ems="10"
         android:text="text to save in shared storage" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/VioletCheckButton"
+        android:id="@+id/nuke_database_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_database">
+    </androidx.appcompat.widget.AppCompatButton>
+
 </LinearLayout>

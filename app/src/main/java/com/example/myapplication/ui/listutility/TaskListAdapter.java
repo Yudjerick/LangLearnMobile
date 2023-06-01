@@ -39,11 +39,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(imageView.getContext(), textView.getText(), Toast.LENGTH_SHORT).show();
-                    Log.i(TAG, textView.getText().toString());
                     NavController navController = Navigation.findNavController(view);
-                    OrderTaskViewModel model = new ViewModelProvider((ViewModelStoreOwner) context).get(OrderTaskViewModel.class);
+                    OrderTaskViewModel model = new ViewModelProvider((ViewModelStoreOwner) context)
+                            .get(OrderTaskViewModel.class);
                     model.setLesson(lesson);
+                    model.setOnTaskScreen(true);
                     navController.navigate(R.id.action_taskSelectionFragment_to_orderTaskFragment);
                 }
             });

@@ -58,7 +58,7 @@ public class TaskSelectionFragment extends Fragment {
         taskList.setLayoutManager(layoutManager);
         taskList.setAdapter(adapter);
 
-        syncLessonsWithServer();
+        //syncLessonsWithServer();
     }
 
     public void syncLessonsWithServer(){
@@ -79,11 +79,8 @@ public class TaskSelectionFragment extends Fragment {
                     }
                 }
             }
-
             @Override
-            public void onFailure(Call<List<String>> call, Throwable t) {
-
-            }
+            public void onFailure(Call<List<String>> call, Throwable t) {}
         });
     }
 
@@ -104,9 +101,7 @@ public class TaskSelectionFragment extends Fragment {
                 }
             }
             @Override
-            public void onFailure(Call<Lesson> call, Throwable t) {
-
-            }
+            public void onFailure(Call<Lesson> call, Throwable t) {}
         });
     }
 }

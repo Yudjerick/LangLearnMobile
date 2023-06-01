@@ -89,6 +89,8 @@ public class SettingsFragment extends Fragment {
             saveFiles();
         });
 
+        binding.nukeDatabaseBtn.setOnClickListener(view12 -> Repository.nukeDataBase());
+
     }
 
     private void saveFiles(){

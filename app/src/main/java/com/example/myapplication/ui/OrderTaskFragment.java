@@ -1,8 +1,11 @@
 package com.example.myapplication.ui;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.AnimatedVectorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,21 +21,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.data.OrderTask;
 import com.example.myapplication.data.Repository;
+import com.example.myapplication.viewmodels.AnswerItem;
+import com.example.myapplication.viewmodels.BankItem;
 import com.example.myapplication.viewmodels.OrderTaskViewModel;
 import com.example.myapplication.databinding.FragmentOrderTaskBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -71,23 +74,20 @@ public class OrderTaskFragment extends Fragment {
         model.getBank().observe(getViewLifecycleOwner(), a->{
             setBankUI(model.getBank().getValue());
         });
+
+
+
         model.getTaskLiveData().observe(getViewLifecycleOwner(), a->{
             task = model.getTask();
             binding.phraseToTranslate.setText(task.getTranslatedPhrase());
-            updateProgressBar();
+            //updateProgressBar();
         });
 
-        binding.greenBar.getLayoutParams().width = 0;
 
 
-        String s = "Он обещал закончить проект через неделю";
-        String[] words = {"He","promised","to", "finish", "the", "project", "in", "one", "week"};
-        String[] additional = {"day", "she"};
-        OrderTask task1 = new OrderTask(s,words, additional);
-        if(model.getTask() == null){
-            setTask(task1);
-        }
-        else{
+
+
+        if(model.getTask() != null){
             setTask(model.getTask());
         }
 
@@ -102,16 +102,22 @@ public class OrderTaskFragment extends Fragment {
             }
             boolean result = task.checkAnswer(givenAnswer);
             if(result){
-                Toast.makeText(getContext(), "Верно!", Toast.LENGTH_SHORT).show();
-
                 binding.robotCharacter.setImageResource(R.drawable.anim_robot_right);
                 AnimatedVectorDrawable avd = (AnimatedVectorDrawable) binding.robotCharacter.getDrawable();
                 avd.start();
 
+                pullRightAnswerBanner();
+
                 if(Repository.containsLesson(model.getLesson().id)){
                     if(model.getLesson().tasks.size() - 1 > model.getTaskIndex()){
                         model.setTaskIndex(model.getTaskIndex()+1);
-                        model.setTask(model.getLesson().tasks.get(model.getTaskIndex()));
+                        binding.nextTaskButton.setEnabled(true);
+                        updateProgressBar();
+                        binding.nextTaskButton.setOnClickListener(view2 -> {
+                            model.setTask(model.getLesson().tasks.get(model.getTaskIndex()));
+                            binding.nextTaskButton.setEnabled(false);
+                            closeRightAnswerBanner();
+                        });
                     }
                     else{
                         model.setTaskIndex(model.getTaskIndex()+1);
@@ -124,8 +130,6 @@ public class OrderTaskFragment extends Fragment {
                 binding.robotCharacter.setImageResource(R.drawable.anim_robot_wrong);
                 AnimatedVectorDrawable avd = (AnimatedVectorDrawable) binding.robotCharacter.getDrawable();
                 avd.start();
-
-                Toast.makeText(getContext(), "Ошибка!", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -133,12 +137,33 @@ public class OrderTaskFragment extends Fragment {
         binding.crossButton.setOnClickListener(view1 -> {
             NavController navController = Navigation.findNavController(getActivity(),
                     R.id.nav_host_fragment_container);
+            model.setOnTaskScreen(false);
             navController.navigate(R.id.action_orderTaskFragment_to_taskSelectionFragment);
         });
+        setInitialProgressBar();
 
     }
+
+    private void setInitialProgressBar(){
+        binding.greenBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                float maxWidth = binding.barBackdround.getWidth();
+                model.setGreenBarMaxWidth(maxWidth);
+                float ratio = (float) model.getTaskIndex()/(float) model.getLesson().tasks.size();
+                binding.greenBar.requestLayout();
+                binding.greenBar.getLayoutParams().width = (int) (ratio* maxWidth);
+
+                binding.greenBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+    }
     private void updateProgressBar(){
+        if(!binding.greenBar.isLaidOut()){
+            return;
+        }
         float maxWidth = binding.barBackdround.getWidth();
+        model.setGreenBarMaxWidth(maxWidth);
         float ratio = (float) model.getTaskIndex()/(float) model.getLesson().tasks.size();
         binding.greenBar.requestLayout();
 
@@ -149,7 +174,6 @@ public class OrderTaskFragment extends Fragment {
                 try {
                     for (int i = 0; i < 9; i++) {
                         Thread.sleep(20);
-                        Log.i("AAA","AAAAAAAA");
                         binding.greenBar.post(() -> {
                             binding.greenBar.requestLayout();
                             binding.greenBar.getLayoutParams().width += (int)( ((maxWidth *
@@ -163,8 +187,6 @@ public class OrderTaskFragment extends Fragment {
                     });
 
                 } catch (InterruptedException e) {
-
-                    Log.i("AAA","Exep");
                     binding.greenBar.post(new Runnable() {
                         @Override
                         public void run() {
@@ -172,17 +194,26 @@ public class OrderTaskFragment extends Fragment {
                         }
                     });
                 }
-
-
             }
         };
         executorService.execute(greenBarUpdating);
-        //binding.greenBar.getLayoutParams().width = (int) (maxWidth*ratio);
+
+    }
+
+    private void pullRightAnswerBanner(){
+        ObjectAnimator animation = ObjectAnimator.ofFloat(binding.rightAnswerBanner, "translationY", 500,0);
+        animation.setDuration(300);
+        animation.start();
+    }
+
+    private void closeRightAnswerBanner(){
+        ObjectAnimator animation = ObjectAnimator.ofFloat(binding.rightAnswerBanner, "translationY", 0,500);
+        animation.setDuration(300);
+        animation.start();
     }
 
     public void setTask(OrderTask task){
         this.task = task;
-        model.setTask(task);
         binding.phraseToTranslate.setText(task.getTranslatedPhrase());
 
         bankFlow = addFlow(binding.bankConstraintLayout);
@@ -212,11 +243,11 @@ public class OrderTaskFragment extends Fragment {
         constraintLayout.addView(flow);
         return flow;
     }
-    private void setAnswerUI(List<String> words){
+    private void setAnswerUI(List<AnswerItem> answerItems){
         binding.answerConstraintLayout.removeAllViews();
-        for (String word: words) {
+        for (AnswerItem answerItem: answerItems) {
             TextView view = (TextView) getLayoutInflater().inflate(R.layout.text_view_order_item, null);
-            view.setText(word);
+            view.setText(answerItem.getWord());
             view.setId(View.generateViewId());
             view.setOnClickListener(new AnswerOnClickListener());
             binding.answerConstraintLayout.addView(view);
@@ -224,15 +255,24 @@ public class OrderTaskFragment extends Fragment {
         }
         binding.answerConstraintLayout.addView(answerFlow);
     }
-    private void setBankUI(List<String> words){
+    private void setBankUI(List<BankItem> bankItems){
         binding.bankConstraintLayout.removeAllViews();
-        for (String word: words) {
-            Button view = (Button)getLayoutInflater().inflate(R.layout.item_button, null);
-            view.setText(word);
+        for (BankItem bankItem: bankItems) {
+            Button view;
+            if(bankItem.isActive()){
+                view = (Button)getLayoutInflater().inflate(R.layout.item_button, null);
+            }else {
+                view = (Button)getLayoutInflater().inflate(R.layout.item_button_disabled, null);
+            }
+            view.setText(bankItem.getWord());
             view.setId(View.generateViewId());
             view.setOnClickListener(new BankOnClickListener());
             binding.bankConstraintLayout.addView(view);
             bankFlow.addView(view);
+
+            if(!bankItem.isActive()){
+                view.setEnabled(false);
+            }
         }
         binding.bankConstraintLayout.addView(bankFlow);
     }
@@ -245,9 +285,15 @@ public class OrderTaskFragment extends Fragment {
         public void onClick(View view) {
             for (int i = 0; i < binding.answerConstraintLayout.getChildCount(); i++) {
                 if(binding.answerConstraintLayout.getChildAt(i) == view){
-                    List<String> newValue = model.getAnswer().getValue();
+                    List<AnswerItem> newValue = model.getAnswer().getValue();
+                    List<BankItem> newBank = model.getBank().getValue();
+
+
+                    newValue.get(i).getAssociated().setActive(true);
                     newValue.remove(i);
-                    ((MutableLiveData)model.getAnswer()).setValue(newValue);
+                    model.setAnswer(newValue);
+
+                    model.setBank(newBank);
                     break;
                 }
             }
@@ -259,22 +305,28 @@ public class OrderTaskFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            List<String> newValue = model.getAnswer().getValue();
-            newValue.add((String) ((Button)view).getText());
+            int buttonIndex = -1;
+            for (int i = 0; i < binding.bankConstraintLayout.getChildCount(); i++) {
+                if(binding.bankConstraintLayout.getChildAt(i) == view){
+                    buttonIndex = i;
+                    break;
+                }
+            }
+
+            List<AnswerItem> newValue = model.getAnswer().getValue();
+            List<BankItem> newBank = model.getBank().getValue();
+            newValue.add(new AnswerItem(((Button)view).getText().toString(), newBank.get(buttonIndex)));
             model.setAnswer(newValue);
+
+            newBank.get(buttonIndex).setActive(false);
+            model.setBank(newBank);
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        try {
-            if(!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)){
-                executorService.shutdownNow();
-            }
-        }
-        catch (Exception e){
-            executorService.shutdownNow();
-        }
+        model.setShouldCallOnPreDrawListener(true);
+        executorService.shutdownNow();
     }
 }

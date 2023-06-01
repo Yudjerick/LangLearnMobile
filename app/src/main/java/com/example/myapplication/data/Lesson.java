@@ -24,7 +24,6 @@ public class Lesson {
     public List<OrderTask> tasks;
     @ColumnInfo(name = "is_completed")
     public boolean isCompleted;
-
     public Lesson(){
         tasks = new ArrayList<>();
         id = "default";
@@ -32,7 +31,6 @@ public class Lesson {
         description = "";
         isCompleted = false;
     }
-
     public Lesson(String id){
         tasks = new ArrayList<>();
         this.id = id;

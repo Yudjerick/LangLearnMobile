@@ -14,9 +14,44 @@ import java.util.Collections;
 import java.util.List;
 
 public class OrderTaskViewModel extends ViewModel {
+    private boolean isOnTaskScreen;
+
     private final MutableLiveData<OrderTask> task;
     private Lesson lesson;
     private int taskIndex;
+
+    private float greenBarMaxWidth;
+
+
+
+    private boolean shouldCallOnPreDrawListener = true;
+
+
+
+    private final MutableLiveData<List<AnswerItem>> answer;
+    private final MutableLiveData<List<BankItem>> bank;
+
+    public boolean isShouldCallOnPreDrawListener() {
+        return shouldCallOnPreDrawListener;
+    }
+
+    public void setShouldCallOnPreDrawListener(boolean shouldCallOnPreDrawListener) {
+        this.shouldCallOnPreDrawListener = shouldCallOnPreDrawListener;
+    }
+    public float getGreenBarMaxWidth() {
+        return greenBarMaxWidth;
+    }
+
+    public void setGreenBarMaxWidth(float greenBarMaxWidth) {
+        this.greenBarMaxWidth = greenBarMaxWidth;
+    }
+    public boolean isOnTaskScreen() {
+        return isOnTaskScreen;
+    }
+
+    public void setOnTaskScreen(boolean onTaskScreen) {
+        isOnTaskScreen = onTaskScreen;
+    }
 
     public Lesson getLesson() {
         return lesson;
@@ -37,15 +72,18 @@ public class OrderTaskViewModel extends ViewModel {
         this.taskIndex = taskIndex;
     }
 
-    private final MutableLiveData<List<String>> answer;
-    private final MutableLiveData<List<String>> bank;
+
 
     public OrderTaskViewModel(OrderTask task){
         this.task = new MutableLiveData<>(task);
         answer = new MutableLiveData<>(new ArrayList<>());
         List<String> shuffled = task.getVariants();
+        List<BankItem> bankItems = new ArrayList<>();
+        for (String word: shuffled) {
+            bankItems.add(new BankItem(word));
+        }
         Collections.shuffle(shuffled);
-        bank = new MutableLiveData<>(shuffled);
+        bank = new MutableLiveData<>(bankItems);
     }
 
     public OrderTaskViewModel() {
@@ -54,15 +92,12 @@ public class OrderTaskViewModel extends ViewModel {
         task = new MutableLiveData<>();
     }
 
-    public LiveData<List<String>> getAnswer() {
+    public LiveData<List<AnswerItem>> getAnswer() {
         return answer;
     }
 
-    public LiveData<List<String>> getBank() {
+    public LiveData<List<BankItem>> getBank() {
         return bank;
-    }
-    public void log(){
-        Log.i("AAAA", "I'm alive");
     }
 
     public OrderTask getTask() {
@@ -73,23 +108,27 @@ public class OrderTaskViewModel extends ViewModel {
         return task;
     }
 
-    public void setAnswer(List<String> words){
+    public void setAnswer(List<AnswerItem> words){
         answer.setValue(words);
+    }
+
+    public void setBank(List<BankItem> bankItems){
+        bank.setValue(bankItems);
     }
 
     public void clearAnswer(){
         answer.setValue(new ArrayList<>());
     }
 
-    public void setTaskSavingAnswer(OrderTask task) {
+    public void setTask(OrderTask task) {
         this.task.setValue(task);
         List<String> shuffled = task.getVariants();
         Collections.shuffle(shuffled);
-        bank.setValue(shuffled);
-    }
-
-    public void setTask(OrderTask task) {
-        setTaskSavingAnswer(task);
+        List<BankItem> bankItems = new ArrayList<>();
+        for (String word: shuffled) {
+            bankItems.add(new BankItem(word));
+        }
+        bank.setValue(bankItems);
         clearAnswer();
     }
 }
