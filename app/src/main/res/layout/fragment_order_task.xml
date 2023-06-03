@@ -29,7 +29,9 @@
                 android:layout_width="60dp"
                 android:layout_height="16dp"
                 android:layout_margin="0dp"
-                android:src="@drawable/lesson_progress_green"></ImageView>
+                android:src="@drawable/lesson_progress_green">
+
+            </ImageView>
         </LinearLayout>
 
         <LinearLayout
@@ -133,6 +135,7 @@
         android:layout_marginBottom="0dp"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/banner_text"
             android:layout_marginHorizontal="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

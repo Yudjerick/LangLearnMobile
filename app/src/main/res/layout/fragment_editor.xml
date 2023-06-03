@@ -10,24 +10,24 @@
     <EditText
         android:id="@+id/phrase_to_translate_editor_input"
         android:layout_width="match_parent"
-        android:fontFamily="@font/nunito_extrabold"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="Name" />
+        android:text="Фраза"
+        android:fontFamily="@font/nunito_extrabold"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/answer_editor_input"
         android:layout_width="425dp"
         android:inputType="textPersonName"
         android:fontFamily="@font/nunito_extrabold"
-        android:text="Name"
+        android:text="Answer"
         android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/additional_variants_editor_input"
         android:layout_width="425dp"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="Additional"
         android:fontFamily="@font/nunito_extrabold"
         android:layout_height="wrap_content" />
 
@@ -35,7 +35,7 @@
         android:id="@+id/lesson_name_input"
         android:layout_width="425dp"
         android:inputType="textPersonName"
-        android:text="Lesson 2"
+        android:text="LessonId"
         android:fontFamily="@font/nunito_extrabold"
         android:layout_height="wrap_content" />
 

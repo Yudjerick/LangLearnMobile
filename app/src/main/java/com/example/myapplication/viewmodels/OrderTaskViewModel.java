@@ -15,36 +15,35 @@ import java.util.List;
 
 public class OrderTaskViewModel extends ViewModel {
     private boolean isOnTaskScreen;
-
     private final MutableLiveData<OrderTask> task;
     private Lesson lesson;
     private int taskIndex;
 
-    private float greenBarMaxWidth;
+    private boolean isRightAnswerBannerActive;
 
-
-
-    private boolean shouldCallOnPreDrawListener = true;
-
+    private boolean isEndOfLesson;
 
 
     private final MutableLiveData<List<AnswerItem>> answer;
     private final MutableLiveData<List<BankItem>> bank;
 
-    public boolean isShouldCallOnPreDrawListener() {
-        return shouldCallOnPreDrawListener;
+    public boolean isRightAnswerBannerActive() {
+        return isRightAnswerBannerActive;
     }
 
-    public void setShouldCallOnPreDrawListener(boolean shouldCallOnPreDrawListener) {
-        this.shouldCallOnPreDrawListener = shouldCallOnPreDrawListener;
-    }
-    public float getGreenBarMaxWidth() {
-        return greenBarMaxWidth;
+    public void setRightAnswerBannerActive(boolean rightAnswerBannerActive) {
+        isRightAnswerBannerActive = rightAnswerBannerActive;
     }
 
-    public void setGreenBarMaxWidth(float greenBarMaxWidth) {
-        this.greenBarMaxWidth = greenBarMaxWidth;
+    public boolean isEndOfLesson() {
+        return isEndOfLesson;
     }
+
+    public void setEndOfLesson(boolean endOfLesson) {
+        isEndOfLesson = endOfLesson;
+    }
+
+
     public boolean isOnTaskScreen() {
         return isOnTaskScreen;
     }
@@ -130,5 +129,7 @@ public class OrderTaskViewModel extends ViewModel {
         }
         bank.setValue(bankItems);
         clearAnswer();
+        isEndOfLesson = false;
+        isRightAnswerBannerActive = false;
     }
 }

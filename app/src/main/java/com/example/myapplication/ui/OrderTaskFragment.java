@@ -75,20 +75,19 @@ public class OrderTaskFragment extends Fragment {
             setBankUI(model.getBank().getValue());
         });
 
-
-
         model.getTaskLiveData().observe(getViewLifecycleOwner(), a->{
             task = model.getTask();
             binding.phraseToTranslate.setText(task.getTranslatedPhrase());
-            //updateProgressBar();
         });
-
-
-
-
 
         if(model.getTask() != null){
             setTask(model.getTask());
+        }
+
+        if(model.isRightAnswerBannerActive()){
+            binding.rightAnswerBanner.setTranslationY(0);
+
+            activateNextButton(model.isEndOfLesson());
         }
 
         binding.checkButton.setOnClickListener(view1 -> {
@@ -106,24 +105,41 @@ public class OrderTaskFragment extends Fragment {
                 AnimatedVectorDrawable avd = (AnimatedVectorDrawable) binding.robotCharacter.getDrawable();
                 avd.start();
 
-                pullRightAnswerBanner();
-
                 if(Repository.containsLesson(model.getLesson().id)){
                     if(model.getLesson().tasks.size() - 1 > model.getTaskIndex()){
                         model.setTaskIndex(model.getTaskIndex()+1);
-                        binding.nextTaskButton.setEnabled(true);
+                        activateNextButton(false);
+                        /*binding.nextTaskButton.setText(R.string.next);
+                        binding.rightAnswerBanner.setBackgroundColor(getResources().getColor(R.color.green));
                         updateProgressBar();
+                        binding.nextTaskButton.setEnabled(true);
                         binding.nextTaskButton.setOnClickListener(view2 -> {
                             model.setTask(model.getLesson().tasks.get(model.getTaskIndex()));
                             binding.nextTaskButton.setEnabled(false);
                             closeRightAnswerBanner();
-                        });
+                        });*/
                     }
                     else{
                         model.setTaskIndex(model.getTaskIndex()+1);
                         updateProgressBar();
+                        model.setEndOfLesson(true);
+                        /*binding.nextTaskButton.setEnabled(true);
+                        binding.nextTaskButton.setText(R.string.finish_lesson);
+                        binding.rightAnswerBanner.setBackgroundColor(getResources().getColor(R.color.magenta));
+                        binding.nextTaskButton.setOnClickListener(view2 -> {
+                            NavController navController = Navigation.findNavController(getActivity(),
+                                    R.id.nav_host_fragment_container);
+                            model.setOnTaskScreen(false);
+                            navController.navigate(R.id.action_orderTaskFragment_to_taskSelectionFragment);
+                            binding.nextTaskButton.setEnabled(false);
+                            closeRightAnswerBanner();
+                        });*/
+                        activateNextButton(true);
                         Repository.setLessonCompleted(model.getLesson().id);
                     }
+                    updateProgressBar();
+                    pullRightAnswerBanner();
+
                 }
             }
             else{
@@ -141,7 +157,6 @@ public class OrderTaskFragment extends Fragment {
             navController.navigate(R.id.action_orderTaskFragment_to_taskSelectionFragment);
         });
         setInitialProgressBar();
-
     }
 
     private void setInitialProgressBar(){
@@ -149,11 +164,9 @@ public class OrderTaskFragment extends Fragment {
             @Override
             public void onGlobalLayout() {
                 float maxWidth = binding.barBackdround.getWidth();
-                model.setGreenBarMaxWidth(maxWidth);
                 float ratio = (float) model.getTaskIndex()/(float) model.getLesson().tasks.size();
                 binding.greenBar.requestLayout();
                 binding.greenBar.getLayoutParams().width = (int) (ratio* maxWidth);
-
                 binding.greenBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
@@ -163,7 +176,6 @@ public class OrderTaskFragment extends Fragment {
             return;
         }
         float maxWidth = binding.barBackdround.getWidth();
-        model.setGreenBarMaxWidth(maxWidth);
         float ratio = (float) model.getTaskIndex()/(float) model.getLesson().tasks.size();
         binding.greenBar.requestLayout();
 
@@ -204,12 +216,40 @@ public class OrderTaskFragment extends Fragment {
         ObjectAnimator animation = ObjectAnimator.ofFloat(binding.rightAnswerBanner, "translationY", 500,0);
         animation.setDuration(300);
         animation.start();
+        model.setRightAnswerBannerActive(true);
     }
 
     private void closeRightAnswerBanner(){
         ObjectAnimator animation = ObjectAnimator.ofFloat(binding.rightAnswerBanner, "translationY", 0,500);
         animation.setDuration(300);
         animation.start();
+        model.setRightAnswerBannerActive(false);
+    }
+
+    private void activateNextButton(boolean isEndOfLesson){
+            if(!isEndOfLesson){
+                binding.nextTaskButton.setText(R.string.next);
+                binding.rightAnswerBanner.setBackgroundColor(getResources().getColor(R.color.green));
+                binding.nextTaskButton.setEnabled(true);
+                binding.nextTaskButton.setOnClickListener(view2 -> {
+                    model.setTask(model.getLesson().tasks.get(model.getTaskIndex()));
+                    binding.nextTaskButton.setEnabled(false);
+                    closeRightAnswerBanner();
+                });
+            }
+            else{
+                binding.nextTaskButton.setEnabled(true);
+                binding.nextTaskButton.setText(R.string.finish_lesson);
+                binding.rightAnswerBanner.setBackgroundColor(getResources().getColor(R.color.magenta));
+                binding.nextTaskButton.setOnClickListener(view2 -> {
+                    NavController navController = Navigation.findNavController(getActivity(),
+                            R.id.nav_host_fragment_container);
+                    model.setOnTaskScreen(false);
+                    navController.navigate(R.id.action_orderTaskFragment_to_taskSelectionFragment);
+                    binding.nextTaskButton.setEnabled(false);
+                    closeRightAnswerBanner();
+                });
+            }
     }
 
     public void setTask(OrderTask task){
@@ -326,7 +366,6 @@ public class OrderTaskFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        model.setShouldCallOnPreDrawListener(true);
         executorService.shutdownNow();
     }
 }

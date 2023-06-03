@@ -11,4 +11,5 @@
     <string name="clear_database">Удалить локальные сохранения</string>
     <string name="right">Верно</string>
     <string name="next">Дальше</string>
+    <string name="finish_lesson">Закончить урок</string>
 </resources>
