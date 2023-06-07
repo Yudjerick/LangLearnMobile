@@ -34,7 +34,6 @@ public class DownloadFragment extends Fragment {
 
     FragmentDownloadBinding binding;
     public DownloadFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -47,19 +46,9 @@ public class DownloadFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding.postButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                makeFakePostRequest();
-            }
-        });
+        binding.postButton.setOnClickListener(view1 -> makeFakePostRequest());
 
-        binding.syncButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                syncLessonsWithServer();
-            }
-        });
+        binding.syncButton.setOnClickListener(view12 -> syncLessonsWithServer());
     }
 
     private void makeFakePostRequest(){

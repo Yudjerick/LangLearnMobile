@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -30,6 +31,12 @@ public class Repository {
         Dao dao = db.dao();
         List<Lesson> lessons = dao.getAll();
         return lessons;
+    }
+
+    public static LiveData<List<Lesson>> getLessonsLiveData(){
+        LessonDataBase db = LessonDataBase.getDatabase(application);
+        Dao dao = db.dao();
+        return dao.getAllLiveData();
     }
     public static Application getApplication() {
         return application;

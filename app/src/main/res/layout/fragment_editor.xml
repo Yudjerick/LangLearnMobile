@@ -11,7 +11,7 @@
         android:id="@+id/phrase_to_translate_editor_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Фраза"
+        android:hint="Фраза для перевода"
         android:fontFamily="@font/nunito_extrabold"
         android:inputType="textPersonName" />
 
@@ -20,14 +20,22 @@
         android:layout_width="425dp"
         android:inputType="textPersonName"
         android:fontFamily="@font/nunito_extrabold"
-        android:text="Answer"
+        android:hint="Ответ (через пробел)"
         android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/additional_variants_editor_input"
         android:layout_width="425dp"
         android:inputType="textPersonName"
-        android:text="Additional"
+        android:hint="Дополнительные варианты (через пробел)"
+        android:fontFamily="@font/nunito_extrabold"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/lesson_descryption_input"
+        android:layout_width="425dp"
+        android:inputType="textPersonName"
+        android:hint="Описание"
         android:fontFamily="@font/nunito_extrabold"
         android:layout_height="wrap_content" />
 
@@ -35,7 +43,7 @@
         android:id="@+id/lesson_name_input"
         android:layout_width="425dp"
         android:inputType="textPersonName"
-        android:text="LessonId"
+        android:hint="ID урока"
         android:fontFamily="@font/nunito_extrabold"
         android:layout_height="wrap_content" />
 

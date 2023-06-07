@@ -34,9 +34,7 @@ import java.util.ArrayList;
 
 public class EditorFragment extends Fragment {
     private FragmentEditorBinding binding;
-    public EditorFragment() {
-        // Required empty public constructor
-    }
+    public EditorFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,17 +77,15 @@ public class EditorFragment extends Fragment {
             Lesson lesson = new Lesson();
             lesson.isCompleted = false;
             lesson.id = binding.lessonNameInput.getText().toString();
-            lesson.description = "Try to save lesson";
+            lesson.description = binding.lessonDescryptionInput.getText().toString();
             lesson.title = lesson.id;
             lesson.tasks = new ArrayList<>();
             Repository.addLesson(lesson);
             SaveTask();
         }
-        //saveTaskToFile(task);
     }
 
     private void saveTaskToFile(OrderTask task){
-
         Gson gson = new Gson();
         String json = gson.toJson(task);
         File externalStorage = Environment.getExternalStorageDirectory();

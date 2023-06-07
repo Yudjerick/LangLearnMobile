@@ -35,10 +35,22 @@ import com.example.myapplication.viewmodels.OrderTaskViewModel;
 import com.example.myapplication.databinding.FragmentOrderTaskBinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import nl.dionsegijn.konfetti.core.Angle;
+import nl.dionsegijn.konfetti.core.Party;
+import nl.dionsegijn.konfetti.core.PartyFactory;
+import nl.dionsegijn.konfetti.core.Position;
+import nl.dionsegijn.konfetti.core.Spread;
+import nl.dionsegijn.konfetti.core.emitter.Emitter;
+import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
+import nl.dionsegijn.konfetti.core.models.Shape;
+import nl.dionsegijn.konfetti.core.models.Size;
+import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class OrderTaskFragment extends Fragment {
     private FragmentOrderTaskBinding binding;
@@ -47,6 +59,8 @@ public class OrderTaskFragment extends Fragment {
     private Flow answerFlow;
 
     private OrderTaskViewModel model;
+
+    private KonfettiView konfettiView = null;
     ExecutorService executorService = Executors.newSingleThreadExecutor();
     public OrderTaskFragment() {}
 
@@ -67,8 +81,10 @@ public class OrderTaskFragment extends Fragment {
             binding.getRoot().setBackgroundColor(getResources().getColor(R.color.dark_background));
         }
 
+        konfettiView = getActivity().findViewById(R.id.konfetti_view);
+
         model = new ViewModelProvider(getActivity()).get(OrderTaskViewModel.class);
-        model.getAnswer().observe(getViewLifecycleOwner(), a ->{
+        model.getAnswer().observe(getViewLifecycleOwner(), a->{
             setAnswerUI(model.getAnswer().getValue());
         });
         model.getBank().observe(getViewLifecycleOwner(), a->{
@@ -109,32 +125,13 @@ public class OrderTaskFragment extends Fragment {
                     if(model.getLesson().tasks.size() - 1 > model.getTaskIndex()){
                         model.setTaskIndex(model.getTaskIndex()+1);
                         activateNextButton(false);
-                        /*binding.nextTaskButton.setText(R.string.next);
-                        binding.rightAnswerBanner.setBackgroundColor(getResources().getColor(R.color.green));
-                        updateProgressBar();
-                        binding.nextTaskButton.setEnabled(true);
-                        binding.nextTaskButton.setOnClickListener(view2 -> {
-                            model.setTask(model.getLesson().tasks.get(model.getTaskIndex()));
-                            binding.nextTaskButton.setEnabled(false);
-                            closeRightAnswerBanner();
-                        });*/
                     }
                     else{
                         model.setTaskIndex(model.getTaskIndex()+1);
                         updateProgressBar();
                         model.setEndOfLesson(true);
-                        /*binding.nextTaskButton.setEnabled(true);
-                        binding.nextTaskButton.setText(R.string.finish_lesson);
-                        binding.rightAnswerBanner.setBackgroundColor(getResources().getColor(R.color.magenta));
-                        binding.nextTaskButton.setOnClickListener(view2 -> {
-                            NavController navController = Navigation.findNavController(getActivity(),
-                                    R.id.nav_host_fragment_container);
-                            model.setOnTaskScreen(false);
-                            navController.navigate(R.id.action_orderTaskFragment_to_taskSelectionFragment);
-                            binding.nextTaskButton.setEnabled(false);
-                            closeRightAnswerBanner();
-                        });*/
                         activateNextButton(true);
+                        spawnConfetti();
                         Repository.setLessonCompleted(model.getLesson().id);
                     }
                     updateProgressBar();
@@ -157,6 +154,45 @@ public class OrderTaskFragment extends Fragment {
             navController.navigate(R.id.action_orderTaskFragment_to_taskSelectionFragment);
         });
         setInitialProgressBar();
+    }
+
+    private void spawnConfetti(){
+        parade();
+    }
+
+    public void explode() {
+        EmitterConfig emitterConfig = new Emitter(100L, TimeUnit.MILLISECONDS).max(100);
+        konfettiView.start(
+                new PartyFactory(emitterConfig)
+                        .spread(360)
+                        .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE))
+                        .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                        .setSpeedBetween(0f, 30f)
+                        .position(new Position.Relative(0.5, 0.3))
+                        .build()
+        );
+    }
+
+    public void parade() {
+        EmitterConfig emitterConfig = new Emitter(1, TimeUnit.SECONDS).perSecond(70);
+        konfettiView.start(
+                new PartyFactory(emitterConfig)
+                        .angle(Angle.RIGHT - 45)
+                        .spread(60)
+                        .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE))
+                        .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                        .setSpeedBetween(10f, 30f)
+                        .position(new Position.Relative(0.0, 0.5))
+                        .build(),
+                new PartyFactory(emitterConfig)
+                        .angle(Angle.LEFT + 45)
+                        .spread(60)
+                        .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE))
+                        .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                        .setSpeedBetween(10f, 30f)
+                        .position(new Position.Relative(1.0, 0.5))
+                        .build()
+        );
     }
 
     private void setInitialProgressBar(){
@@ -240,7 +276,7 @@ public class OrderTaskFragment extends Fragment {
             else{
                 binding.nextTaskButton.setEnabled(true);
                 binding.nextTaskButton.setText(R.string.finish_lesson);
-                binding.rightAnswerBanner.setBackgroundColor(getResources().getColor(R.color.magenta));
+                binding.rightAnswerBanner.setBackgroundColor(getResources().getColor(R.color.green));
                 binding.nextTaskButton.setOnClickListener(view2 -> {
                     NavController navController = Navigation.findNavController(getActivity(),
                             R.id.nav_host_fragment_container);

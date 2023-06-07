@@ -156,4 +156,9 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <nl.dionsegijn.konfetti.xml.KonfettiView
+        android:id="@+id/konfetti_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </RelativeLayout>

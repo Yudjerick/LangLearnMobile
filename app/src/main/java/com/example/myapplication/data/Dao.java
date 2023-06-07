@@ -1,5 +1,6 @@
 package com.example.myapplication.data;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -10,6 +11,9 @@ import java.util.List;
 public interface Dao {
     @Query("SELECT * FROM lesson")
     List<Lesson> getAll();
+
+    @Query("SELECT * FROM lesson")
+    LiveData<List<Lesson>> getAllLiveData();
 
     @Insert
     void insertAll(Lesson... lessons);
