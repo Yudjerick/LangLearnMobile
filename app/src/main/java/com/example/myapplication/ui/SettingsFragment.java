@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -28,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +42,7 @@ public class SettingsFragment extends Fragment {
 
 
 
+    public static String BASE_URL = "https://raw.githubusercontent.com/Yudjerick/FakeServer/main/";
     FragmentSettingsBinding binding;
     public SettingsFragment() {
         // Required empty public constructor
@@ -60,12 +63,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        try{
-            readFiles();
-        }catch (Exception ignored){
-
-        }
+        binding.syncButton.setOnClickListener(view12 -> syncLessonsWithServer());
 
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(getString(R.string.preference_file_key),
@@ -73,70 +71,66 @@ public class SettingsFragment extends Fragment {
         boolean darkMode = sharedPreferences.getBoolean("dark", false);
 
         if(darkMode){
-            binding.getRoot().setBackgroundColor(getResources().getColor(R.color.dark_background));
             binding.darkSwitch.setChecked(true);
         }
 
         binding.darkSwitch.setOnClickListener(view1 -> {
             if (binding.darkSwitch.isChecked()){
-                binding.getRoot().setBackgroundColor(getResources().getColor(R.color.dark_background));
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             }
             else {
-                binding.getRoot().setBackgroundColor(getResources().getColor(R.color.white));
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
             sharedPreferences.edit().putBoolean("dark", binding.darkSwitch.isChecked()).apply();
-
-            saveFiles();
         });
 
         binding.nukeDatabaseBtn.setOnClickListener(view12 -> Repository.nukeDataBase());
 
     }
 
-    private void saveFiles(){
-        File file = new File(getContext().getFilesDir(), "file.txt");
-        try {
-            FileOutputStream fout = new FileOutputStream(file);
-            fout.write(binding.appSpecificData.getText().toString().getBytes());
-            fout.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        File externalStorage = getContext().getExternalFilesDir("storage");
-        File fileShared = new File(externalStorage, "file_shared.txt");
-        try {
-            FileOutputStream fout = new FileOutputStream(fileShared);
-            fout.write(binding.sharedData.getText().toString().getBytes());
-            fout.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void syncLessonsWithServer(){
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        LessonsAPI api = retrofit.create(LessonsAPI.class);
+        Call<List<String>> idsCall = api.getAllIds();
+        idsCall.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                if(response.isSuccessful()){
+                    for (String id: response.body()) {
+                        downloadLessonFromServer(id);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {}
+        });
     }
 
-    private void readFiles(){
-        try {
-            File file = new File(getContext().getFilesDir(), "file.txt");
-            FileInputStream fin = new FileInputStream(file);
-            byte[] data = new byte[(int) file.length()];
-            fin.read(data);
-            fin.close();
-            binding.appSpecificData.setText(new String(data, StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            File externalStorage = getContext().getExternalFilesDir("storage");
-            File fileShared = new File(externalStorage, "file_shared.txt");
-            FileInputStream fin = new FileInputStream(fileShared);
-            byte[] data = new byte[(int) fileShared.length()];
-            fin.read(data);
-            fin.close();
-            binding.sharedData.setText(new String(data, StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    public void downloadLessonFromServer(String taskId){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        LessonsAPI api = retrofit.create(LessonsAPI.class);
+        Call<Lesson> lessonCall = api.loadLesson(taskId);
+        lessonCall.enqueue(new Callback<Lesson>() {
+            @Override
+            public void onResponse(Call<Lesson> call, Response<Lesson> response) {
+                if(response.isSuccessful()){
+                    Lesson lesson = response.body();
+                    Repository.addLesson(lesson);
+                }
+            }
+            @Override
+            public void onFailure(Call<Lesson> call, Throwable t) {}
+        });
+    }
 
 
 }

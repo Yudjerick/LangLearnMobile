@@ -3,18 +3,17 @@
 
     <item
         android:id="@+id/nav_lessons"
-        android:title="Уроки" />
+        android:title="Уроки"
+        android:icon="@drawable/ic_lessons"/>
 
     <item
         android:id="@+id/nav_editor"
-        android:title="Редактор" />
+        android:title="Редактор"
+        android:icon="@drawable/ic_editor"/>
 
     <item
         android:id="@+id/nav_settings"
-        android:title="Настройки" />
-
-    <item
-        android:id="@+id/nav_download"
-        android:title="Cкачать задания" />
+        android:title="Настройки"
+        android:icon="@drawable/ic_settings"/>
 
 </menu>

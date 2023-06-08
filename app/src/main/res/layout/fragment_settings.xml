@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_marginHorizontal="16dp"
     tools:context=".ui.SettingsFragment">
 
     <Switch
@@ -12,21 +13,15 @@
         android:layout_width="wrap_content"
         android:layout_height="75dp"
         android:layout_margin="5dp"
-        android:text="Dark" />
+        android:text="Dark"
+        android:fontFamily="@font/nunito_extrabold"/>
 
-    <EditText
-        android:id="@+id/app_specific_data"
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/sync_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:text="text to save in app specific storage" />
-
-    <EditText
-        android:id="@+id/shared_data"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:text="text to save in shared storage" />
+        style="@style/VioletCheckButton"
+        android:text="Синхронизация"/>
 
     <androidx.appcompat.widget.AppCompatButton
         style="@style/VioletCheckButton"

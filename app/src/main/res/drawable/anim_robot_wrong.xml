@@ -96,7 +96,7 @@
                     android:propertyName="strokeColor"
                     android:duration="100"
                     android:valueFrom="#ffffff"
-                    android:valueTo="#ff6a6a"
+                    android:valueTo="#FF7B71"
                     android:valueType="colorType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
@@ -111,7 +111,7 @@
                     android:propertyName="strokeColor"
                     android:startOffset="450"
                     android:duration="100"
-                    android:valueFrom="#ff6a6a"
+                    android:valueFrom="#FF7B71"
                     android:valueTo="#ffffff"
                     android:valueType="colorType"
                     android:interpolator="@android:interpolator/fast_out_slow_in"/>

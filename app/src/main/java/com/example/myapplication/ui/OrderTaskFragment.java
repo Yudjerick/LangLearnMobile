@@ -2,6 +2,7 @@ package com.example.myapplication.ui;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -62,6 +63,9 @@ public class OrderTaskFragment extends Fragment {
 
     private KonfettiView konfettiView = null;
     ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    private Shape starShape;
+    private Shape wowShape;
     public OrderTaskFragment() {}
 
     @Override
@@ -71,16 +75,10 @@ public class OrderTaskFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(getString(R.string.preference_file_key),
-                Context.MODE_PRIVATE);
-        if(sharedPreferences.getBoolean("dark", false)){
-            binding.getRoot().setBackgroundColor(getResources().getColor(R.color.dark_background));
-        }
-
         konfettiView = getActivity().findViewById(R.id.konfetti_view);
 
         model = new ViewModelProvider(getActivity()).get(OrderTaskViewModel.class);
@@ -131,7 +129,7 @@ public class OrderTaskFragment extends Fragment {
                         updateProgressBar();
                         model.setEndOfLesson(true);
                         activateNextButton(true);
-                        spawnConfetti();
+                        parade(500);
                         Repository.setLessonCompleted(model.getLesson().id);
                     }
                     updateProgressBar();
@@ -154,10 +152,8 @@ public class OrderTaskFragment extends Fragment {
             navController.navigate(R.id.action_orderTaskFragment_to_taskSelectionFragment);
         });
         setInitialProgressBar();
-    }
-
-    private void spawnConfetti(){
-        parade();
+        starShape = new Shape.DrawableShape(getResources().getDrawable(R.drawable.confetti_star), true);
+        wowShape = new Shape.DrawableShape(getResources().getDrawable(R.drawable.confetti_wow), true);
     }
 
     public void explode() {
@@ -173,23 +169,29 @@ public class OrderTaskFragment extends Fragment {
         );
     }
 
-    public void parade() {
-        EmitterConfig emitterConfig = new Emitter(1, TimeUnit.SECONDS).perSecond(70);
+    @SuppressLint("UseCompatLoadingForDrawables")
+    public void parade(long duration) {
+        EmitterConfig emitterConfig = new Emitter(duration, TimeUnit.MILLISECONDS).perSecond(70);
         konfettiView.start(
                 new PartyFactory(emitterConfig)
                         .angle(Angle.RIGHT - 45)
                         .spread(60)
-                        .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE))
-                        .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                        .shapes(Arrays.asList(Shape.Circle.INSTANCE, starShape, wowShape))
+                        .colors(Arrays.asList(0xBFFDB5, 0xCB98FF, 0xFFEE53, 0xFF5353))
+                        //.colors(Arrays.asList(0xBFFDB5, 0xCB98FF, 0xFDC2B5))
                         .setSpeedBetween(10f, 30f)
+                        .sizes(new Size(24, 1,1), new Size(40, 1, 1))
                         .position(new Position.Relative(0.0, 0.5))
                         .build(),
                 new PartyFactory(emitterConfig)
                         .angle(Angle.LEFT + 45)
                         .spread(60)
-                        .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE))
-                        .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                        .shapes(Arrays.asList(Shape.Circle.INSTANCE, starShape, wowShape))
+                        .colors(Arrays.asList(0xBFFDB5, 0xCB98FF, 0xFFEE53, 0xFF5353))
+                        //.colors(Arrays.asList(0xBFFDB5, 0xCB98FF, 0xFDC2B5))
+                        //.colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
                         .setSpeedBetween(10f, 30f)
+                        .sizes(new Size(24, 1,1), new Size(40, 1, 1))
                         .position(new Position.Relative(1.0, 0.5))
                         .build()
         );
